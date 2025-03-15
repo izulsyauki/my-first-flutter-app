@@ -58,7 +58,7 @@ class _kalkulatorState extends State<kalkulator> {
                 controller: angka1,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  hintText: "Silahkan Input Angka Pertama",
+                  labelText: "Silahkan Input Angka Pertama",
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -72,7 +72,7 @@ class _kalkulatorState extends State<kalkulator> {
                 controller: angka2,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  hintText: "Silahkan Input Angka Kedua",
+                  labelText: "Silahkan Input Angka Kedua",
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -86,7 +86,7 @@ class _kalkulatorState extends State<kalkulator> {
                 controller: hasil,
                 readOnly: true,
                 decoration: InputDecoration(
-                  hintText: "Hasil Perhitungan",
+                  labelText: "Hasil Perhitungan",
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
