@@ -5,14 +5,16 @@ void main() {
 }
 
 class kalkulator extends StatefulWidget {
+  const kalkulator({super.key});
+
   @override
   State<kalkulator> createState() => _kalkulatorState();
 }
 
 class _kalkulatorState extends State<kalkulator> {
-  TextEditingController angka1 = new TextEditingController();
-  TextEditingController angka2 = new TextEditingController();
-  TextEditingController hasil = new TextEditingController();
+  TextEditingController angka1 = TextEditingController();
+  TextEditingController angka2 = TextEditingController();
+  TextEditingController hasil = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -182,6 +184,7 @@ class CalculatorButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   const CalculatorButton({
+    super.key,
     required this.icon,
     required this.label,
     required this.color,

@@ -5,16 +5,18 @@ void main() {
 }
 
 class latihan1 extends StatelessWidget {
+  const latihan1({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        fontFamily: 'Roboto',
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'Roboto'),
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Latihan 1 Flutter', style: TextStyle(fontWeight: FontWeight.bold)),
+          title: Text(
+            'Latihan 1 Flutter',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
           centerTitle: true,
           elevation: 0,
         ),
@@ -55,10 +57,7 @@ class latihan1 extends StatelessWidget {
                     letterSpacing: 1.2,
                   ),
                 ),
-                Divider(
-                  color: Colors.blue.shade800,
-                  thickness: 2,
-                ),
+                Divider(color: Colors.blue.shade800, thickness: 2),
                 Container(
                   width: 180,
                   height: 180,
