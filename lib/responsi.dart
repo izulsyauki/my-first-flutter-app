@@ -30,7 +30,7 @@ class WelcomePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                'Apotek Sederhana',
+                'Aplikasi Apotek Sederhana',
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
@@ -39,22 +39,24 @@ class WelcomePage extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               const Text(
-                'Universitas Komputer',
+                'Universitas Dian Nuswantoro',
                 style: TextStyle(fontSize: 20, color: Colors.teal),
               ),
               const SizedBox(height: 20),
               const CircleAvatar(
                 radius: 50,
-                backgroundImage: NetworkImage('https://picsum.photos/100'),
+                backgroundImage: NetworkImage(
+                  'https://media.licdn.com/dms/image/v2/D5603AQE_ExulPZJ2Dg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1696391836214?e=1750291200&v=beta&t=iiX8L4RfZIO0Fb7JTMGp1jasNSebua_NUNjv7gUw3Po',
+                ),
               ),
               const SizedBox(height: 12),
               const Text(
-                'Nama: [Your Name]',
+                'Nama: Izulsyauki Imani',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 8),
               const Text(
-                'NIM: [Your NIM]',
+                'NIM: A18.2023.00029',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 24),
