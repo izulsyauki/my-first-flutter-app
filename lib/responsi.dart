@@ -7,10 +7,9 @@ void main() {
 class SimplePharmacyApp extends StatelessWidget {
   const SimplePharmacyApp({super.key});
 
-  @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Simple Pharmacy App',
+      title: "Simple Pharmacy App",
       theme: ThemeData(primarySwatch: Colors.teal),
       home: const WelcomePage(),
     );
@@ -20,7 +19,6 @@ class SimplePharmacyApp extends StatelessWidget {
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.teal[50],
@@ -30,7 +28,7 @@ class WelcomePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                'Aplikasi Apotek Sederhana',
+                "Aplikasi Apotek Sederhana",
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
@@ -39,24 +37,24 @@ class WelcomePage extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               const Text(
-                'Universitas Dian Nuswantoro',
+                "Universitas Dian Nuswantoro",
                 style: TextStyle(fontSize: 20, color: Colors.teal),
               ),
               const SizedBox(height: 20),
               const CircleAvatar(
                 radius: 50,
                 backgroundImage: NetworkImage(
-                  'https://media.licdn.com/dms/image/v2/D5603AQE_ExulPZJ2Dg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1696391836214?e=1750291200&v=beta&t=iiX8L4RfZIO0Fb7JTMGp1jasNSebua_NUNjv7gUw3Po',
+                  "https://media.licdn.com/dms/image/v2/D5603AQE_ExulPZJ2Dg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1696391836214?e=1750291200&v=beta&t=iiX8L4RfZIO0Fb7JTMGp1jasNSebua_NUNjv7gUw3Po",
                 ),
               ),
               const SizedBox(height: 12),
               const Text(
-                'Nama: Izulsyauki Imani',
+                "Nama: Izulsyauki Imani",
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 8),
               const Text(
-                'NIM: A18.2023.00029',
+                "NIM: A18.2023.00029",
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 24),
@@ -78,7 +76,7 @@ class WelcomePage extends StatelessWidget {
                   ),
                 ),
                 child: const Text(
-                  'Masuk Dashboard',
+                  "Masuk Dashboard",
                   style: TextStyle(fontSize: 16, color: Colors.white),
                 ),
               ),
@@ -93,15 +91,14 @@ class WelcomePage extends StatelessWidget {
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dashboard Apotek'),
+        title: const Text("Dashboard Apotek"),
         backgroundColor: Colors.teal,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(12),
         child: Column(
           children: [
             Expanded(
@@ -112,7 +109,7 @@ class HomePage extends StatelessWidget {
                 children: [
                   MenuCard(
                     icon: Icons.local_pharmacy,
-                    title: 'Stok Obat',
+                    title: "Stok Obat",
                     onTap: () {
                       Navigator.push(
                         context,
@@ -124,12 +121,12 @@ class HomePage extends StatelessWidget {
                   ),
                   MenuCard(
                     icon: Icons.shopping_cart,
-                    title: 'Transaksi',
+                    title: "Transaksi",
                     onTap: () {},
                   ),
                   MenuCard(
                     icon: Icons.analytics,
-                    title: 'Statistik',
+                    title: "Statistik",
                     onTap: () {},
                   ),
                 ],
@@ -145,7 +142,6 @@ class HomePage extends StatelessWidget {
 class MedicineStockPage extends StatelessWidget {
   const MedicineStockPage({super.key});
 
-  @override
   Widget build(BuildContext context) {
     final medicines = [
       {
@@ -182,7 +178,7 @@ class MedicineStockPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Stok Obat'),
+        title: const Text("Stok Obat"),
         backgroundColor: Colors.teal,
       ),
       body: ListView.builder(
@@ -214,7 +210,7 @@ class MedicineStockPage extends StatelessWidget {
                 medicines[index]['name']!,
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),
-              subtitle: Text('Stok: ${medicines[index]['stock']}'),
+              subtitle: Text("Stok: ${medicines[index]['stock']!}"),
             ),
           );
         },
@@ -235,7 +231,6 @@ class MenuCard extends StatelessWidget {
     required this.onTap,
   });
 
-  @override
   Widget build(BuildContext context) {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
