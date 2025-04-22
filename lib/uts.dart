@@ -5,16 +5,15 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Dashboard',
+      title: "Aplikasi Flutter UTS",
       theme: ThemeData(
         primarySwatch: Colors.blue,
         scaffoldBackgroundColor: Colors.white,
         textTheme: TextTheme(
           titleLarge: TextStyle(
-            fontSize: 22,
+            fontSize: 18,
             fontWeight: FontWeight.bold,
             color: Colors.black87,
           ),
@@ -35,7 +34,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// Data statis untuk dashboard dan gallery
 const List<Map<String, dynamic>> dashboardItems = [
   {'icon': Icons.home, 'title': 'Menu Utama', 'route': null},
   {'icon': Icons.shopping_cart, 'title': 'Transaksi Penjualan', 'route': null},
@@ -49,12 +47,14 @@ const List<Map<String, String>> fruits = [
   {
     'name': 'Pepaya',
     'description': 'Kaya akan vitamin C dan antioksidan.',
-    'imageUrl': 'https://images.unsplash.com/photo-1603046899560-efc4c756d3e8',
+    'imageUrl':
+        'https://images.unsplash.com/photo-1623492229905-ebc1202e8904?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   },
   {
     'name': 'Semangka',
     'description': 'Segar dan kaya akan hidrasi alami.',
-    'imageUrl': 'https://images.unsplash.com/photo-1589916306729-6fddf25b913c',
+    'imageUrl':
+        'https://images.unsplash.com/photo-1587049352846-4a222e784d38?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   },
   {
     'name': 'Jeruk',
@@ -64,26 +64,22 @@ const List<Map<String, String>> fruits = [
   {
     'name': 'Jambu',
     'description': 'Menyegarkan dengan rasa manis alami.',
-    'imageUrl': 'https://images.unsplash.com/photo-1593951003488-7e7b5e8b4e7b',
-  },
-  {
-    'name': 'Jeruk',
-    'description': 'Sumber vitamin C yang baik untuk imun.',
-    'imageUrl': 'https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b',
+    'imageUrl':
+        'https://images.unsplash.com/photo-1693399991519-bef70bed19a2?q=80&w=688&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   },
   {
     'name': 'Pisang',
     'description': 'Kaya kalium untuk energi sepanjang hari.',
-    'imageUrl': 'https://images.unsplash.com/photo-1603833665858-e61e7f2e3877',
+    'imageUrl':
+        'https://images.unsplash.com/photo-1623810836868-057b23aef3aa?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   },
 ];
 
 class DashboardScreen extends StatelessWidget {
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Dashboard', style: Theme.of(context).textTheme.titleLarge),
+        title: Text("Dashboard", style: Theme.of(context).textTheme.titleLarge),
         backgroundColor: Colors.blue[900],
         foregroundColor: Colors.white,
         elevation: 0,
@@ -109,7 +105,7 @@ class DashboardScreen extends StatelessWidget {
                     child: CircleAvatar(
                       radius: 38,
                       backgroundImage: NetworkImage(
-                        'https://randomuser.me/api/portraits/men/1.jpg',
+                        'https://media.licdn.com/dms/image/v2/D5603AQE_ExulPZJ2Dg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1696391836214?e=1750896000&v=beta&t=O3ExQAmJ8jwRmvY1SohKOacsjbmivW1trXAMmxEeNgY',
                       ),
                     ),
                   ),
@@ -118,7 +114,7 @@ class DashboardScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'A11.2022.12345',
+                        'A18.2023.00029',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -126,7 +122,7 @@ class DashboardScreen extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'BABY BOZZ ANAKNI NAMORA',
+                        "Izulsyauki Imani",
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -134,7 +130,7 @@ class DashboardScreen extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'Universitas Dian Nuswantoro - Semarang',
+                        "Universitas Dian Nuswantoro - Semarang",
                         style: TextStyle(fontSize: 14, color: Colors.white70),
                       ),
                     ],
@@ -181,18 +177,16 @@ class DashboardCard extends StatefulWidget {
 
   DashboardCard({required this.icon, required this.title, this.onTap});
 
-  @override
   _DashboardCardState createState() => _DashboardCardState();
 }
 
 class _DashboardCardState extends State<DashboardCard> {
   double _elevation = 2.0;
 
-  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: widget.onTap,
-      onTapDown: (_) => setState(() => _elevation = 6.0),
+      onTapDown: (_) => setState(() => _elevation = 4.0),
       onTapUp: (_) => setState(() => _elevation = 2.0),
       onTapCancel: () => setState(() => _elevation = 2.0),
       child: Card(
@@ -221,7 +215,6 @@ class _DashboardCardState extends State<DashboardCard> {
 }
 
 class GalleryProductsScreen extends StatelessWidget {
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
@@ -232,7 +225,7 @@ class GalleryProductsScreen extends StatelessWidget {
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
-                'Gallery Products',
+                "Gallery Products",
                 style: TextStyle(color: Colors.white),
               ),
               background: Stack(
@@ -319,7 +312,7 @@ class AboutUsScreen extends StatelessWidget {
   final List<Map<String, dynamic>> aboutInfo = [
     {
       'icon': Icons.school,
-      'text': 'Program Akademik 2025',
+      'text': "Universitas Dian Nuswantoro",
       'style': TextStyle(
         fontSize: 22,
         fontWeight: FontWeight.bold,
@@ -328,7 +321,7 @@ class AboutUsScreen extends StatelessWidget {
     },
     {
       'icon': null,
-      'text': 'Fakultas Ilmu Komputer',
+      'text': "Fakultas Ilmu Komputer",
       'style': TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.bold,
@@ -337,7 +330,7 @@ class AboutUsScreen extends StatelessWidget {
     },
     {
       'icon': null,
-      'text': 'Belajar Jarak Jauh dengan Teknologi Modern',
+      'text': "Program Jarah Jauh (PJJ)",
       'style': TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w600,
@@ -346,13 +339,12 @@ class AboutUsScreen extends StatelessWidget {
     },
   ];
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.blue[900]!, Colors.blue[600]!],
+            colors: [Colors.blue[900]!, Colors.blue[700]!],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -409,7 +401,7 @@ class AboutUsScreen extends StatelessWidget {
                   child: CircleAvatar(
                     radius: 76,
                     backgroundImage: NetworkImage(
-                      'https://randomuser.me/api/portraits/men/2.jpg',
+                      'https://media.licdn.com/dms/image/v2/D5603AQE_ExulPZJ2Dg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1696391836214?e=1750896000&v=beta&t=O3ExQAmJ8jwRmvY1SohKOacsjbmivW1trXAMmxEeNgY',
                     ),
                   ),
                 ),
@@ -427,7 +419,7 @@ class AboutUsScreen extends StatelessWidget {
                     elevation: 5,
                   ),
                   child: Text(
-                    'Kembali ke Dashboard',
+                    "Kembali ke Dashboard",
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                 ),
