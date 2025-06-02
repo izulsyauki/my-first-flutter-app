@@ -9,6 +9,9 @@ environment:
 dependencies:
     flutter:
         sdk: flutter
+    mysql1: any
+    http: any
+    cupertino_icons: ^1.0.2
 
 dev_dependencies:
     flutter_test:
@@ -19,3 +22,4 @@ flutter:
     uses-material-design: true
     assets:
         - images/izulsyauki.jpg
+        - images/avatar-1.jpg
