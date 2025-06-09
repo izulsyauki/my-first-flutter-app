@@ -37,7 +37,7 @@ class _DatabaseListViewState extends State<DatabaseListView> {
   Future<void> getMahasiswa() async {
     try {
       final response = await http.get(
-        Uri.parse('http://17.1.17.8:8080/api/mahasiswa.php'),
+        Uri.parse('http://17.1.17.32:8080/api/mahasiswa.php'),
       );
 
       if (response.statusCode == 200) {
@@ -63,10 +63,48 @@ class _DatabaseListViewState extends State<DatabaseListView> {
     }
   }
 
+  Future<void> tambahMahasiswa(String nama, String nim, String prodi) async {
+    try {
+      final response = await http.post(
+        Uri.parse('http://17.1.17.32:8080/api/mahasiswa.php'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'nama': nama, 'nim': nim, 'prodi': prodi}),
+      );
+
+      if (response.statusCode == 200) {
+        getMahasiswa(); // Refresh the list
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Data mahasiswa berhasil ditambahkan')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: Status code ${response.statusCode}')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Data Mahasiswa')),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) => const InputMahasiswaDialog(),
+          ).then((value) {
+            if (value != null) {
+              tambahMahasiswa(value['nama'], value['nim'], value['prodi']);
+            }
+          });
+        },
+        child: const Icon(Icons.add),
+      ),
       body: Column(
         children: [
           Card(
@@ -118,6 +156,88 @@ class _DatabaseListViewState extends State<DatabaseListView> {
   }
 }
 
+class InputMahasiswaDialog extends StatefulWidget {
+  const InputMahasiswaDialog({super.key});
+
+  @override
+  State<InputMahasiswaDialog> createState() => _InputMahasiswaDialogState();
+}
+
+class _InputMahasiswaDialogState extends State<InputMahasiswaDialog> {
+  final TextEditingController _namaController = TextEditingController();
+  final TextEditingController _nimController = TextEditingController();
+  final TextEditingController _prodiController = TextEditingController();
+
+  @override
+  void dispose() {
+    _namaController.dispose();
+    _nimController.dispose();
+    _prodiController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Tambah Mahasiswa'),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: _namaController,
+              decoration: const InputDecoration(
+                labelText: 'Nama',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _nimController,
+              decoration: const InputDecoration(
+                labelText: 'NIM',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _prodiController,
+              decoration: const InputDecoration(
+                labelText: 'Program Studi',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Batal'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            if (_namaController.text.isEmpty ||
+                _nimController.text.isEmpty ||
+                _prodiController.text.isEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Semua field harus diisi')),
+              );
+              return;
+            }
+            Navigator.pop(context, {
+              'nama': _namaController.text,
+              'nim': _nimController.text,
+              'prodi': _prodiController.text,
+            });
+          },
+          child: const Text('Simpan'),
+        ),
+      ],
+    );
+  }
+}
+
 class DetailPage extends StatelessWidget {
   final Map<String, dynamic> mahasiswa;
 
@@ -157,7 +277,7 @@ class DetailPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    mahasiswa['smt'] ?? '',
+                    'Program Studi: ${mahasiswa['prodi'] ?? ''}',
                     style: const TextStyle(fontSize: 18),
                   ),
                 ],
