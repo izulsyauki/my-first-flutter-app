@@ -10,6 +10,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Data Mahasiswa',
       theme: ThemeData(primarySwatch: Colors.blue),
       home: const DatabaseListView(),
@@ -75,6 +76,31 @@ class _DatabaseListViewState extends State<DatabaseListView> {
         getMahasiswa(); // Refresh the list
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Data mahasiswa berhasil ditambahkan')),
+        );
+      } else {
+        final data = jsonDecode(response.body);
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: ${data['message']}')));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
+
+  Future<void> updateMahasiswa(String name, String nim, String prodi) async {
+    try {
+      final response = await http.put(
+        Uri.parse('http://17.1.17.32:8080/api/mahasiswa.php'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'nama': name, 'nim': nim, 'prodi': prodi}),
+      );
+      if (response.statusCode == 200) {
+        getMahasiswa(); // Refresh the list
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Data mahasiswa berhasil diupdate')),
         );
       } else {
         final data = jsonDecode(response.body);
@@ -324,53 +350,110 @@ class _InputMahasiswaDialogState extends State<InputMahasiswaDialog> {
   }
 }
 
-class DetailPage extends StatelessWidget {
+class DetailPage extends StatefulWidget {
   final Map<String, dynamic> mahasiswa;
 
   const DetailPage({super.key, required this.mahasiswa});
 
   @override
+  State<DetailPage> createState() => _DetailPageState();
+}
+
+class _DetailPageState extends State<DetailPage> {
+  late TextEditingController _namaController;
+  late TextEditingController _nimController;
+  late TextEditingController _prodiController;
+  bool _isEditing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _namaController = TextEditingController(text: widget.mahasiswa['nama']);
+    _nimController = TextEditingController(text: widget.mahasiswa['nim']);
+    _prodiController = TextEditingController(text: widget.mahasiswa['prodi']);
+  }
+
+  @override
+  void dispose() {
+    _namaController.dispose();
+    _nimController.dispose();
+    _prodiController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Detail Mahasiswa')),
-      body: Column(
-        children: [
-          Center(
-            child: Image.network(
-              'images/avatar-1.jpg',
-              height: 200,
-              width: 200,
-              fit: BoxFit.cover,
-            ),
+      appBar: AppBar(
+        title: const Text('Detail Mahasiswa'),
+        actions: [
+          IconButton(
+            icon: Icon(_isEditing ? Icons.save : Icons.edit),
+            onPressed: () {
+              if (_isEditing) {
+                Navigator.pop(context);
+                if (context.mounted) {
+                  final databaseState =
+                      context.findAncestorStateOfType<_DatabaseListViewState>();
+                  databaseState?.updateMahasiswa(
+                    _namaController.text,
+                    _nimController.text,
+                    _prodiController.text,
+                  );
+                }
+              }
+              setState(() {
+                _isEditing = !_isEditing;
+              });
+            },
           ),
-          Center(
-            child: Padding(
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            Center(
+              child: CircleAvatar(
+                radius: 80,
+                backgroundImage: const AssetImage('images/avatar-1.jpg'),
+              ),
+            ),
+            Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    mahasiswa['nama'] ?? '',
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+                  TextField(
+                    controller: _namaController,
+                    enabled: _isEditing,
+                    decoration: const InputDecoration(
+                      labelText: 'Nama',
+                      border: OutlineInputBorder(),
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'NIM: ${mahasiswa['nim'] ?? ''}',
-                    style: const TextStyle(fontSize: 18),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: _nimController,
+                    enabled: false,
+                    decoration: const InputDecoration(
+                      labelText: 'NIM',
+                      border: OutlineInputBorder(),
+                    ),
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Program Studi: ${mahasiswa['prodi'] ?? ''}',
-                    style: const TextStyle(fontSize: 18),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: _prodiController,
+                    enabled: _isEditing,
+                    decoration: const InputDecoration(
+                      labelText: 'Program Studi',
+                      border: OutlineInputBorder(),
+                    ),
                   ),
                 ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
