@@ -50,9 +50,9 @@ class _DatabaseListViewState extends State<DatabaseListView> {
       } else {
         if (!mounted) return;
         setState(() => isLoading = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: Status code ${response.statusCode}')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: ${response.body}')));
       }
     } catch (e) {
       if (!mounted) return;
@@ -77,9 +77,36 @@ class _DatabaseListViewState extends State<DatabaseListView> {
           const SnackBar(content: Text('Data mahasiswa berhasil ditambahkan')),
         );
       } else {
+        final data = jsonDecode(response.body);
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: ${data['message']}')));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
+
+  Future<void> hapusMahasiswa(String nim) async {
+    try {
+      final response = await http.delete(
+        Uri.parse('http://17.1.17.32:8080/api/mahasiswa.php'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'nim': nim}),
+      );
+
+      if (response.statusCode == 200) {
+        getMahasiswa(); // Refresh the list
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: Status code ${response.statusCode}')),
+          const SnackBar(content: Text('Data mahasiswa berhasil dihapus')),
         );
+      } else {
+        final data = jsonDecode(response.body);
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: ${data['message']}')));
       }
     } catch (e) {
       ScaffoldMessenger.of(
@@ -112,10 +139,9 @@ class _DatabaseListViewState extends State<DatabaseListView> {
             color: Colors.lightBlueAccent,
             child: ListTile(
               title: const Text(
-                'Izulsyauki Imani',
+                'Project By : Izulsyauki Imani - A18.2023.00029',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              subtitle: const Text('NIM: A18.2023.00029'),
             ),
           ),
           Expanded(
@@ -145,6 +171,66 @@ class _DatabaseListViewState extends State<DatabaseListView> {
                                 subtitle: Text(
                                   'NIM: ${mahasiswa[index]['nim']}',
                                 ),
+                                trailing: IconButton(
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                  ),
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder:
+                                          (context) => AlertDialog(
+                                            title: const Text(
+                                              'Konfirmasi Hapus',
+                                            ),
+                                            content: const Text(
+                                              'Apakah Anda yakin ingin menghapus data ini?',
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                onPressed:
+                                                    () =>
+                                                        Navigator.pop(context),
+                                                child: const Text(
+                                                  'Batal',
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                              ),
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                  hapusMahasiswa(
+                                                    mahasiswa[index]['nim'],
+                                                  );
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.red,
+                                                ),
+                                                child: const Text(
+                                                  'Hapus',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                    );
+                                  },
+                                ),
+                                onTap:
+                                    () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (context) => DetailPage(
+                                              mahasiswa: mahasiswa[index],
+                                            ),
+                                      ),
+                                    ),
                               ),
                             ),
                           ),
