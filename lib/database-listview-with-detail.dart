@@ -10,7 +10,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       title: 'Data Mahasiswa',
       theme: ThemeData(primarySwatch: Colors.blue),
       home: const DatabaseListView(),
@@ -76,31 +75,6 @@ class _DatabaseListViewState extends State<DatabaseListView> {
         getMahasiswa(); // Refresh the list
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Data mahasiswa berhasil ditambahkan')),
-        );
-      } else {
-        final data = jsonDecode(response.body);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error: ${data['message']}')));
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error: $e')));
-    }
-  }
-
-  Future<void> updateMahasiswa(String name, String nim, String prodi) async {
-    try {
-      final response = await http.put(
-        Uri.parse('http://17.1.17.32:8080/api/mahasiswa.php'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'nama': name, 'nim': nim, 'prodi': prodi}),
-      );
-      if (response.statusCode == 200) {
-        getMahasiswa(); // Refresh the list
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Data mahasiswa berhasil diupdate')),
         );
       } else {
         final data = jsonDecode(response.body);
@@ -350,111 +324,181 @@ class _InputMahasiswaDialogState extends State<InputMahasiswaDialog> {
   }
 }
 
-class DetailPage extends StatefulWidget {
+class DetailPage extends StatelessWidget {
   final Map<String, dynamic> mahasiswa;
 
   const DetailPage({super.key, required this.mahasiswa});
 
   @override
-  State<DetailPage> createState() => _DetailPageState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Detail Mahasiswa')),
+      body: Column(
+        children: [
+          Center(
+            child: Image.network(
+              'images/avatar-1.jpg',
+              height: 200,
+              width: 200,
+              fit: BoxFit.cover,
+            ),
+          ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    mahasiswa['nama'] ?? '',
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'NIM: ${mahasiswa['nim'] ?? ''}',
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Program Studi: ${mahasiswa['prodi'] ?? ''}',
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder:
+                            (context) => EditMahasiswaDialog(
+                              nama: mahasiswa['nama'],
+                              nim: mahasiswa['nim'],
+                              prodi: mahasiswa['prodi'],
+                            ),
+                      );
+                    },
+                    icon: const Icon(Icons.edit),
+                    label: const Text('Edit Data'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
-class _DetailPageState extends State<DetailPage> {
+class EditMahasiswaDialog extends StatefulWidget {
+  final String nama;
+  final String nim;
+  final String prodi;
+
+  const EditMahasiswaDialog({
+    super.key,
+    required this.nama,
+    required this.nim,
+    required this.prodi,
+  });
+
+  @override
+  State<EditMahasiswaDialog> createState() => _EditMahasiswaDialogState();
+}
+
+class _EditMahasiswaDialogState extends State<EditMahasiswaDialog> {
   late TextEditingController _namaController;
-  late TextEditingController _nimController;
   late TextEditingController _prodiController;
-  bool _isEditing = false;
 
   @override
   void initState() {
     super.initState();
-    _namaController = TextEditingController(text: widget.mahasiswa['nama']);
-    _nimController = TextEditingController(text: widget.mahasiswa['nim']);
-    _prodiController = TextEditingController(text: widget.mahasiswa['prodi']);
+    _namaController = TextEditingController(text: widget.nama);
+    _prodiController = TextEditingController(text: widget.prodi);
   }
 
   @override
   void dispose() {
     _namaController.dispose();
-    _nimController.dispose();
     _prodiController.dispose();
     super.dispose();
   }
 
+  Future<void> _updateData() async {
+    try {
+      final response = await http.put(
+        Uri.parse('http://17.1.17.32:8080/api/mahasiswa.php'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'nama': _namaController.text,
+          'nim': widget.nim,
+          'prodi': _prodiController.text,
+        }),
+      );
+
+      if (!mounted) return;
+
+      if (response.statusCode == 200) {
+        // Tutup dialog edit
+        Navigator.pop(context);
+        // Kembali ke halaman list dengan refresh
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const DatabaseListView()),
+        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Data berhasil diupdate')));
+      } else {
+        final data = jsonDecode(response.body);
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: ${data['message']}')));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Detail Mahasiswa'),
-        actions: [
-          IconButton(
-            icon: Icon(_isEditing ? Icons.save : Icons.edit),
-            onPressed: () {
-              if (_isEditing) {
-                Navigator.pop(context);
-                if (context.mounted) {
-                  final databaseState =
-                      context.findAncestorStateOfType<_DatabaseListViewState>();
-                  databaseState?.updateMahasiswa(
-                    _namaController.text,
-                    _nimController.text,
-                    _prodiController.text,
-                  );
-                }
-              }
-              setState(() {
-                _isEditing = !_isEditing;
-              });
-            },
+    return AlertDialog(
+      title: const Text('Edit Data Mahasiswa'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: _namaController,
+            decoration: const InputDecoration(labelText: 'Nama'),
+          ),
+          TextField(
+            controller: _prodiController,
+            decoration: const InputDecoration(labelText: 'Program Studi'),
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            Center(
-              child: CircleAvatar(
-                radius: 80,
-                backgroundImage: const AssetImage('images/avatar-1.jpg'),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  TextField(
-                    controller: _namaController,
-                    enabled: _isEditing,
-                    decoration: const InputDecoration(
-                      labelText: 'Nama',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: _nimController,
-                    enabled: false,
-                    decoration: const InputDecoration(
-                      labelText: 'NIM',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: _prodiController,
-                    enabled: _isEditing,
-                    decoration: const InputDecoration(
-                      labelText: 'Program Studi',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Batal'),
         ),
-      ),
+        ElevatedButton(
+          onPressed: () {
+            if (_namaController.text.isEmpty || _prodiController.text.isEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Semua field harus diisi')),
+              );
+              return;
+            }
+            _updateData(); // Panggil fungsi update langsung
+          },
+          child: const Text('Simpan'),
+        ),
+      ],
     );
   }
 }
